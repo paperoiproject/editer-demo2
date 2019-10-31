@@ -154,7 +154,7 @@ function ScenarioList() {
           open={state.addFlag} 
           scenes={[]} 
            close={()=>{setState({ ...state, addFlag: false})}}
-           edit_target={-1}
+           edit_target={state.edit_target}
            />
         ) : ""
       }
