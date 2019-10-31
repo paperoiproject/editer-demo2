@@ -31,8 +31,8 @@ import SendDialog from './SendDialog';
 import {ScenarioMakeAction} from "../../Store/Action/Actions/goAPI";
 import { useSelector, useDispatch } from "react-redux";
 
-const url = "http://localhost:8080/image/get?name="
-let defo_url =  "http://localhost:8080/image/get?name=defo";
+const url = "http://localhost:8080/image/get?"
+let defo_url =  "http://localhost:8080/image/get?name=defo&num=0";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -172,7 +172,7 @@ export default function ShowDialog(props) {
                       setState({...state, imageFlag: true, image_src: value.image_src})
                     }
                     else if(value.image !== ""){
-                      setState({...state, imageFlag: true, image_src: `${url}${value.image}&day=${new Date() - 0}`})
+                      setState({...state, imageFlag: true, image_src: `${url}name=${value.name}&num=${value.num}&day=${new Date() - 0}`})
                     }
                     else {
                         setState({...state, imageFlag: true, image_src: defo_url})
