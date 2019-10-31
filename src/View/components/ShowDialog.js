@@ -65,6 +65,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
+const actions = {
+  'A':'笑顔',
+  'B':'周りをみる',
+  'C':'お辞儀をする',
+  'D':'泣く'
+};
+
+
 export default function ShowDialog(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -103,7 +112,7 @@ export default function ShowDialog(props) {
     setState({...state, tasks: applyDrag(state.tasks, e)})
   }
 
-  console.log(state.scenes)
+  console.log("cdjnnjkcnd",state.scenes)
   console.log(state.chFlag)
   
   return (
@@ -142,6 +151,7 @@ export default function ShowDialog(props) {
       {
        (state.scenes.length) ? state.scenes.map((value, i) => {
         const labelId = `checkbox-list-label-${value}`;
+        console.log(state.scenes)
         return (
           <Draggable >
           <ListItem key={value.text} role={undefined} dense button>
@@ -153,7 +163,7 @@ export default function ShowDialog(props) {
                 <DeleteIcon />
               </IconButton>
             </ListItemIcon>
-            <ListItemText id={labelId} primary={`${value.action}: ${value.text}`} />
+            <ListItemText id={labelId} primary={`${actions[value.action]}: ${value.text}`} />
             <ListItemSecondaryAction>
               <IconButton edge="end" aria-label="comments">
                 <ImageIcon onClick={() => {

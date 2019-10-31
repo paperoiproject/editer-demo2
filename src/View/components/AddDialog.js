@@ -49,8 +49,12 @@ export default function AddDialog(props) {
   const classes = useStyles();
   const [state, setState] = React.useState({action: "A", text: "", image_src: ""});
   
-  const handleChange = name => event => {
+  const handleChange = (name) => event => {
     setState({ ...state, [name]: event.target.value });
+  };
+
+  const handleChange2 = (name) => event => {
+    handleChange(name)
   };
 
   const handleClose = () => {
@@ -58,8 +62,12 @@ export default function AddDialog(props) {
   };
 
   const handleTextChange = (e) => {
-    setState({...state, text: e.target.value});
+    setState({
+      ...state, 
+      text: e.target.value,
+    });
   }
+
 
   const handleImageChange = (e) => {
     var files = e.target.files;
@@ -77,7 +85,7 @@ export default function AddDialog(props) {
               select
               label="動作"
               value={state.action}
-              onChange={handleChange('action')}
+              onChange={handleChange("action")}
               SelectProps={{
                   MenuProps: {
                     className: classes.menu,

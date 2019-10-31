@@ -10,7 +10,7 @@ import ShowDialog from './ShowDialog';
 import { useSelector, useDispatch } from "react-redux";
 
 import {ScenarioLoadAction, ScenesLoadAction} from "../../Store/Action/Actions/goAPI";
-
+import ServerErrorDis from "./ServerErrorDis"
 const useStyles = makeStyles({
   root: {
     width: "60vw",
@@ -60,6 +60,11 @@ function ScenarioList() {
       edit_target: -1,
     });
     console.log(scenes)
+    if (test === undefined){
+      console.log("OK")
+      return (<ServerErrorDis/>)
+      
+    }
     return (
       <div className={classes.root}>
       <MaterialTable
@@ -70,8 +75,10 @@ function ScenarioList() {
           return {
             name: v.name,
             day:  moment(v.date).format('YYYY年MM月DD日HH時mm分'),
-            date: v.date}
+            date: v.date
+          }
         })}
+  
         options={{
           pageSize: 10,
         }}
@@ -145,8 +152,7 @@ function ScenarioList() {
           <ShowDialog 
           open={state.addFlag} 
           scenes={[]} 
-          name={test[state.showTarget].name} 
-          close={()=>{setState({ ...state, addFlag: false})}}/>
+           close={()=>{setState({ ...state, addFlag: false})}}/>
         ) : ""
       }
       {
