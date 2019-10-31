@@ -60,6 +60,7 @@ function ScenarioList() {
       edit_target: -1,
     });
     console.log(scenes)
+
     if (test === undefined){
       console.log("OK")
       return (<ServerErrorDis/>)
@@ -142,17 +143,19 @@ function ScenarioList() {
             <TableFooter className={classes.TablePagination}>
               <TableRow>
                 <TablePagination  {...props} rowsPerPageOptions = {[]}/>
-              </TableRow>
+            </TableRow>
            </TableFooter>
           ),
         }}
-      />
+      />  
       {
         (state.addFlag) ? (
           <ShowDialog 
           open={state.addFlag} 
           scenes={[]} 
-           close={()=>{setState({ ...state, addFlag: false})}}/>
+           close={()=>{setState({ ...state, addFlag: false})}}
+           edit_target={-1}
+           />
         ) : ""
       }
       {
@@ -170,4 +173,5 @@ function ScenarioList() {
       </div>
     );
   }
+
   export default ScenarioList
