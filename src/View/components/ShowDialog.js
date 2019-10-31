@@ -82,7 +82,9 @@ export default function ShowDialog(props) {
     addFlag: false,
     sendFlag: false,
     imageFlag: false,
-    image_src: ""});
+    image_src: "",
+    edit_target:props.edit_target
+  });
 
   const addScene = (v) => {
     console.log(v)
@@ -112,7 +114,7 @@ export default function ShowDialog(props) {
     setState({...state, tasks: applyDrag(state.tasks, e)})
   }
 
-  console.log("cdjnnjkcnd",state.scenes)
+  console.log(state.scenes)
   console.log(state.chFlag)
   
   return (
@@ -124,10 +126,9 @@ export default function ShowDialog(props) {
           <CloseIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
-         {(props.edit_target < 0)? "シナリオ追加" : "シナリオ編集"}
+         {(state.edit_target < 0)? "シナリオ追加" : "シナリオ編集"}
         </Typography>
         <Button color="inherit" onClick={() => {
-         console.log("aa")
          setState({...state, sendFlag: true})
          console.log(state.sendFlag)
           /*
@@ -136,7 +137,7 @@ export default function ShowDialog(props) {
           props.close()
           */
         }}>
-          追加
+          {(state.edit_target < 0)? "追加" : "編集"}
         </Button>
       </Toolbar>
     </AppBar>
