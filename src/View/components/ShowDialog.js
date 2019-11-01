@@ -130,7 +130,6 @@ export default function ShowDialog(props) {
     setState({...state, tasks: applyDrag(state.tasks, e)})
   }
 
-<<<<<<< HEAD
   function handleAddSceneClick(i){
     console.log(state.scenes[i].image_src)
     setState({...state, addFlag: true, addSceneMode:"edit", addSceneEditIndex:i})
@@ -138,8 +137,7 @@ export default function ShowDialog(props) {
   console.log(state.scenes)
   console.log(state.chFlag)
   
-=======
->>>>>>> 0c62ce4dddf9a939e7b9f273530aa0f384c64e31
+
   return (
     <Dialog fullScreen open={props.open} onClose={() => {props.handleClose()}}>
 

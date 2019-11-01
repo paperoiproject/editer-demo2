@@ -49,15 +49,14 @@ var createObjectURL = (window.URL || window.webkitURL).createObjectURL || window
 
 export default function AddDialog(props) {
   const classes = useStyles();
-<<<<<<< HEAD
   console.log(props.text)
   const [state, setState] = React.useState({
     action: props.action, 
     text: props.text, 
   });
-=======
+
   const [state, setState] = React.useState({action: "A", text: "", image_src: "", imageCrop: false, image_defo: true});
->>>>>>> 0c62ce4dddf9a939e7b9f273530aa0f384c64e31
+
   
 
   const handleChange = (name) => event => {
