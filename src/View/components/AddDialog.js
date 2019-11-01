@@ -49,11 +49,12 @@ export default function AddDialog(props) {
   const classes = useStyles();
   console.log(props.text)
   const [state, setState] = React.useState({
-    action: "A", 
+    action: props.action, 
     text: props.text, 
     image_src: props.image_src,
   });
   
+
   const handleChange = (name) => event => {
     setState({ ...state, [name]: event.target.value });
   };
@@ -75,6 +76,8 @@ export default function AddDialog(props) {
     var image_src = files.length===0 ? "" : createObjectURL(files[0]);
     setState({...state, image_src: image_src, image_file: files[0]});
   }
+  
+  
 
   return (
     <div>

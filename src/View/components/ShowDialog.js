@@ -215,8 +215,11 @@ export default function ShowDialog(props) {
           ()=>{setState({...state, addFlag: false})}
         }
         addScene={(v,mode) => {addScene(v,state.addSceneMode)}}
-      
-        text={state.scenes[state.addSceneEditIndex].text}/>
+        addSceneMode={state.addSceneMode}
+        action={(state.addSceneMode==="edit") ? state.scenes[state.addSceneEditIndex].action : "A"}
+        text={(state.addSceneMode==="edit") ? state.scenes[state.addSceneEditIndex].text : ""}
+        image_src={state.scenes[state.addSceneEditIndex].image_src}
+        />
       ) : ""
     }
     {
