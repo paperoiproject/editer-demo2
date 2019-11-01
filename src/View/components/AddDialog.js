@@ -47,14 +47,15 @@ var createObjectURL = (window.URL || window.webkitURL).createObjectURL || window
 
 export default function AddDialog(props) {
   const classes = useStyles();
-  const [state, setState] = React.useState({action: "A", text: "", image_src: ""});
+  console.log(props.text)
+  const [state, setState] = React.useState({
+    action: "A", 
+    text: props.text, 
+    image_src: props.image_src,
+  });
   
   const handleChange = (name) => event => {
     setState({ ...state, [name]: event.target.value });
-  };
-
-  const handleChange2 = (name) => event => {
-    handleChange(name)
   };
 
   const handleClose = () => {
@@ -104,6 +105,7 @@ export default function AddDialog(props) {
             id="name"
             margin="normal"
             label="話す言葉"
+            value={state.text}
             onChange={e => {handleTextChange(e)}}
           />
           <TextField
