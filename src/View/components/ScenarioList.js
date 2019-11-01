@@ -9,7 +9,7 @@ import ShowDialog from './ShowDialog';
 
 import { useSelector, useDispatch } from "react-redux";
 
-import {ScenarioLoadAction, ScenesLoadAction} from "../../Store/Action/Actions/goAPI";
+import {ScenarioLoadAction, ScenesLoadAction,ScenarioDeleteAction } from "../../Store/Action/Actions/goAPI";
 import ServerErrorDis from "./ServerErrorDis"
 const useStyles = makeStyles({
   root: {
@@ -79,7 +79,6 @@ function ScenarioList() {
             date: v.date
           }
         })}
-  
         options={{
           pageSize: 10,
         }}
@@ -111,26 +110,14 @@ function ScenarioList() {
               setState({ ...state, addFlag: true})
             }
           },
-          {
-            icon: 'edit',
-            tooltip: 'edit',
-            onClick: (event, rowData) => {
-              let index = test.findIndex(item => item.name === rowData.name)
-              setState({ ...state, dialagFlag: true, edit_target: index})
-            }
-          }
         ]}
         editable={{
           onRowDelete: oldData =>
             new Promise(resolve => {
-              setTimeout(() => {
-                console.log(oldData)
-                let data = state.test.filter((v) => {
-                  return oldData.name !== v.name
-                })
-                setState({ ...state, test: data})
-                resolve();
-              }, 600);
+              let formData = new FormData()
+              formData.append("name", oldData.name)
+              dispatch(ScenarioDeleteAction(formData))
+              resolve()
             }),
         }}
         components={{
@@ -153,9 +140,9 @@ function ScenarioList() {
           <ShowDialog 
           open={state.addFlag} 
           scenes={[]} 
-           close={()=>{setState({ ...state, addFlag: false})}}
-           edit_target={state.edit_target}
-           />
+          close={()=>{setState({ ...state, addFlag: false})}}
+          edit_target={state.edit_target}
+          />
         ) : ""
       }
       {

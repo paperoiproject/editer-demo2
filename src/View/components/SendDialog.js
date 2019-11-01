@@ -25,7 +25,7 @@ export default function SendDialog(props) {
   const handleTextChange = (e) => {
     setText(e.target.value);
   }
-  console.log("bb")
+  
   return (
     <div>
       <Dialog open={props.flag} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -44,7 +44,6 @@ export default function SendDialog(props) {
           </Button>
           <Button 
            onClick={() => {
-               console.log(text)
                props.send(text)
             }} color="primary">
             シナリオを確定

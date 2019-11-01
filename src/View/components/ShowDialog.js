@@ -28,7 +28,7 @@ import ImageDialog from './ImageDialog';
 import AddDialog from './AddDialog';
 import SendDialog from './SendDialog';
 
-import {ScenarioMakeAction} from "../../Store/Action/Actions/goAPI";
+import {ScenarioMakeAction, ScenarioUpdateAction} from "../../Store/Action/Actions/goAPI";
 import { useSelector, useDispatch } from "react-redux";
 
 const url = "http://localhost:8080/image/get?"
@@ -104,6 +104,11 @@ export default function ShowDialog(props) {
       formData.append(`act${i + 1}`, state.scenes[i].action)
       formData.append(`text${i + 1}`, state.scenes[i].text)
       formData.append(`image${i + 1}`, state.scenes[i].image_file)
+      if(state.scenes[i].image !== ""){
+        formData.append(`imageDefo${i + 1}`, 0)
+      } else {
+        formData.append(`imageDefo${i + 1}`, 1)
+      }
     }
     return formData
   }
@@ -114,9 +119,6 @@ export default function ShowDialog(props) {
     setState({...state, tasks: applyDrag(state.tasks, e)})
   }
 
-  console.log(state.scenes)
-  console.log(state.chFlag)
-  
   return (
     <Dialog fullScreen open={props.open} onClose={() => {props.handleClose()}}>
 
@@ -129,13 +131,13 @@ export default function ShowDialog(props) {
          {(state.edit_target < 0)? "シナリオ追加" : "シナリオ編集"}
         </Typography>
         <Button color="inherit" onClick={() => {
-         setState({...state, sendFlag: true})
-         console.log(state.sendFlag)
-          /*
-          const formData = makeFormData()
-          dispatch(ScenarioMakeAction(formData))
+         if(props.scenes.length !== 0){
+          const formData = makeFormData(props.name)
+          dispatch(ScenarioUpdateAction(formData))
           props.close()
-          */
+         } else {
+          setState({...state, sendFlag: true})
+         }
         }}>
           {(state.edit_target < 0)? "追加" : "編集"}
         </Button>
@@ -204,9 +206,9 @@ export default function ShowDialog(props) {
         <SendDialog 
          flag = {state.sendFlag} 
          send = {(name) => {
-          const formData = makeFormData(name)
-          dispatch(ScenarioMakeAction(formData))
-          props.close()
+           const formData = makeFormData(name)
+           dispatch(ScenarioMakeAction(formData))
+           props.close()
          }}
          close={
            ()=>{setState({...state, sendFlag: false})}

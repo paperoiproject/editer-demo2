@@ -38,6 +38,20 @@ export const ScenarioMakedAction = (check) => {
     }
 };
 
+export const ScenarioUpdateAction = (formData) => {
+    return {
+        type: 'SCENARIOUPDATE',
+        formData: formData
+    }
+};
+
+export const ScenarioDeleteAction = (formData) => {
+    return {
+        type: 'SCENARIODELETE',
+        formData: formData
+    }
+};
+
 
 
 
