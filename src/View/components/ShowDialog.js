@@ -125,8 +125,8 @@ export default function ShowDialog(props) {
     setState({...state, tasks: applyDrag(state.tasks, e)})
   }
 
-  function handleClick(i){
-    console.log(i)
+  function handleAddSceneClick(i){
+    console.log(state.scenes[i].image_src)
     setState({...state, addFlag: true, addSceneMode:"edit", addSceneEditIndex:i})
   }
   console.log(state.scenes)
@@ -160,7 +160,7 @@ export default function ShowDialog(props) {
 
     <div className = {classes.App}>
     <Fab color="secondary" aria-label="edit" className={classes.fab}>
-      <AddIcon onClick={() => {setState({...state, addFlag: true, addSceneMode:"",addSceneEditIndex:0})}}/>
+      <AddIcon onClick={() => {setState({...state, addFlag: true, addSceneMode:""})}}/>
     </Fab>
     <List className={classes.root}>
     <Container onDrop={e => drop(e)}>
@@ -175,7 +175,7 @@ export default function ShowDialog(props) {
               <IconButton>
                 <EditIcon onClick={(e)=>{
                   console.log(i)
-                  handleClick(i)
+                  handleAddSceneClick(i)
                 }}/>
               </IconButton>
               <IconButton>
@@ -218,7 +218,6 @@ export default function ShowDialog(props) {
         addSceneMode={state.addSceneMode}
         action={(state.addSceneMode==="edit") ? state.scenes[state.addSceneEditIndex].action : "A"}
         text={(state.addSceneMode==="edit") ? state.scenes[state.addSceneEditIndex].text : ""}
-        image_src={state.scenes[state.addSceneEditIndex].image_src}
         />
       ) : ""
     }
