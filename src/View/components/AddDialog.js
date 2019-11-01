@@ -9,6 +9,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import CropDialog from './CropDialog';
+
 
 const actions = [
     {
@@ -47,7 +49,7 @@ var createObjectURL = (window.URL || window.webkitURL).createObjectURL || window
 
 export default function AddDialog(props) {
   const classes = useStyles();
-  const [state, setState] = React.useState({action: "A", text: "", image_src: ""});
+  const [state, setState] = React.useState({action: "A", text: "", image_src: "", imageCrop: false, image_defo: true});
   
   const handleChange = (name) => event => {
     setState({ ...state, [name]: event.target.value });
@@ -71,8 +73,9 @@ export default function AddDialog(props) {
 
   const handleImageChange = (e) => {
     var files = e.target.files;
-    var image_src = files.length===0 ? "" : createObjectURL(files[0]);
-    setState({...state, image_src: image_src, image_file: files[0]});
+    var image_src = (files.length===0) ? "" : createObjectURL(files[0]);
+    setState({...state, image_src: image_src, imageCrop: true});
+    //setState({...state, image_src: image_src, image_file: files[0], image_defo: false});
   }
 
   return (
@@ -124,6 +127,19 @@ export default function AddDialog(props) {
             Subscribe
           </Button>
         </DialogActions>
+        {
+        (state.imageCrop) ? (
+        <CropDialog 
+         flag = {state.imageCrop} 
+         image_src = {state.image_src}
+         cropImage = {(url, file) => {
+           setState({...state, image_src: url, image_file: file, image_defo: false, imageCrop: false});
+         }}
+         close={
+           ()=>{setState({...state, imageCrop: false})}
+          } />
+      ) : ""
+    }
       </Dialog>
     </div>
   );
