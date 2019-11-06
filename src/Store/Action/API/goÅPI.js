@@ -43,20 +43,40 @@ export function ScenarioMakeAPI(formData){
   .catch(error => {
       return { error };
   });
-    // return request
-    // .post(`http://localhost:8080/scenario/make`)
-    // .set('Content-Type', 'multipart/form-data')
-    // .type('form')
-    // .send(formData)
-    // .then(response => {
-    //   const body = response.body;
-    //   console.log(body)
-    //   return body;
-    // })
-    // .catch(error => {
-    //   return { error };
-    // });
 }
+
+export function ScenarioUpdateAPI(formData){
+  return axios
+  .post(`http://localhost:8080/scenario/update`, formData, {
+      headers: {
+         'content-type': 'multipart/form-data',
+      },
+  })
+  .then(response => {
+    return response
+  })
+  .catch(error => {
+      return { error };
+  });
+}
+
+export function ScenarioDeleteAPI(formData){
+  return axios
+  .post(`http://localhost:8080/scenario/delete`, formData, {
+      headers: {
+         'content-type': 'multipart/form-data',
+      },
+  })
+  .then(response => {
+    return response
+  })
+  .catch(error => {
+      return { error };
+  });
+}
+
+
+
 
 
 
