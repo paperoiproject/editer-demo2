@@ -53,9 +53,12 @@ export default function AddDialog(props) {
   const [state, setState] = React.useState({
     action: props.action, 
     text: props.text, 
+    image_src: "",
+    imageCrop: false,
   });
-
+  /*
   const [state, setState] = React.useState({action: "A", text: "", image_src: "", imageCrop: false, image_defo: true});
+  */
 
   
 
