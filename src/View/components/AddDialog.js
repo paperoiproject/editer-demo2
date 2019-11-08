@@ -82,7 +82,6 @@ export default function AddDialog(props) {
     var files = e.target.files;
     var image_src = (files.length===0) ? "" : createObjectURL(files[0]);
     setState({...state, image_src: image_src, imageCrop: true});
-    //setState({...state, image_src: image_src, image_file: files[0], image_defo: false});
   }
   
   
