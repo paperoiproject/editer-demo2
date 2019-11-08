@@ -83,15 +83,26 @@ export default function ShowDialog(props) {
     sendFlag: false,
     imageFlag: false,
     image_src: "",
-    edit_target:props.edit_target
+    edit_target:props.edit_target,
+    addSceneMode:"",
+    addSceneEditIndex:0
   });
 
-  const addScene = (v) => {
+  const addScene = (v,mode) => {
+    if (mode == "edit"){
+      state.scenes[state.addSceneEditIndex].action = v.action
+      state.scenes[state.addSceneEditIndex].text = v.text
+      state.scenes[state.addSceneEditIndex].image_src = v.image_src
+      setState({...state, addFlag:false})
+      return
+    }
     console.log(v)
     var new_scenes = (state.scenes.length) ? state.scenes.slice() : []
     new_scenes.push(v)
     console.log(new_scenes)
+    console.log(state.mode)
     setState({...state, scenes: new_scenes, addFlag: false})
+    //setState({...state, scenes: new_scenes, addFlag: false})
   }
   
   const makeFormData = (name) => {
@@ -119,6 +130,13 @@ export default function ShowDialog(props) {
     setState({...state, tasks: applyDrag(state.tasks, e)})
   }
 
+  function handleAddSceneClick(i){
+    console.log(state.scenes[i].image_src)
+    setState({...state, addFlag: true, addSceneMode:"edit", addSceneEditIndex:i})
+  }
+  console.log(state.scenes)
+  console.log(state.chFlag)
+  
   return (
     <Dialog fullScreen open={props.open} onClose={() => {props.handleClose()}}>
 
@@ -147,7 +165,7 @@ export default function ShowDialog(props) {
 
     <div className = {classes.App}>
     <Fab color="secondary" aria-label="edit" className={classes.fab}>
-      <AddIcon onClick={() => {setState({...state, addFlag: true})}}/>
+      <AddIcon onClick={() => {setState({...state, addFlag: true, addSceneMode:""})}}/>
     </Fab>
     <List className={classes.root}>
     <Container onDrop={e => drop(e)}>
@@ -160,7 +178,10 @@ export default function ShowDialog(props) {
           <ListItem key={value.text} role={undefined} dense button>
             <ListItemIcon>
               <IconButton>
-                <EditIcon />
+                <EditIcon onClick={(e)=>{
+                  console.log(i)
+                  handleAddSceneClick(i)
+                }}/>
               </IconButton>
               <IconButton>
                 <DeleteIcon />
@@ -198,7 +219,11 @@ export default function ShowDialog(props) {
         closeAddFlag={
           ()=>{setState({...state, addFlag: false})}
         }
-        addScene={(v) => {addScene(v)}}/>
+        addScene={(v,mode) => {addScene(v,state.addSceneMode)}}
+        addSceneMode={state.addSceneMode}
+        action={(state.addSceneMode==="edit") ? state.scenes[state.addSceneEditIndex].action : "A"}
+        text={(state.addSceneMode==="edit") ? state.scenes[state.addSceneEditIndex].text : ""}
+        />
       ) : ""
     }
     {
