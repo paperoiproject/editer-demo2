@@ -124,6 +124,13 @@ export default function ShowDialog(props) {
     return formData
   }
 
+  const deleteScene = (index) => {
+    var new_scenes = []
+    state.scenes.map((value, i)=>{
+      if (i != index) new_scenes.push(state.scenes[i])
+    })
+    setState({...state, scenes:new_scenes})
+  }
 
 
   function drop(e){
@@ -184,7 +191,10 @@ export default function ShowDialog(props) {
                 }}/>
               </IconButton>
               <IconButton>
-                <DeleteIcon />
+                <DeleteIcon onClick={()=>{
+                  console.log(i)
+                  deleteScene(i)
+                }}/>
               </IconButton>
             </ListItemIcon>
             <ListItemText id={labelId} primary={`${actions[value.action]}: ${value.text}`} />
