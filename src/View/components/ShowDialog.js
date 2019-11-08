@@ -102,7 +102,10 @@ export default function ShowDialog(props) {
     console.log(new_scenes)
     console.log(state.mode)
     setState({...state, scenes: new_scenes, addFlag: false})
-    //setState({...state, scenes: new_scenes, addFlag: false})
+  }
+
+  const drop = (e) => {
+    setState({...state, scenes: applyDrag(state.scenes, e)})
   }
   
   const makeFormData = (name) => {
@@ -115,16 +118,10 @@ export default function ShowDialog(props) {
       formData.append(`act${i + 1}`, state.scenes[i].action)
       formData.append(`text${i + 1}`, state.scenes[i].text)
       formData.append(`image${i + 1}`, state.scenes[i].image_file)
-      if(state.scenes[i].image !== ""){
-        formData.append(`imageDefo${i + 1}`, 0)
-      } else {
-        formData.append(`imageDefo${i + 1}`, 1)
-      }
+      formData.append(`imageURL${i + 1}`, state.scenes[i].image)
     }
     return formData
   }
-
-
 
   function drop(e){
     setState({...state, tasks: applyDrag(state.tasks, e)})
