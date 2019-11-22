@@ -52,6 +52,67 @@ export const ScenarioDeleteAction = (formData) => {
     }
 };
 
+export const TimeTableLoadAction = () => {
+    return {
+        type: 'TIMETABLELOADACTION',
+    }
+};
+
+export const TimeTableLoadedAction = (res) => {
+    return {
+        timeTable: res,
+        type: 'TIMETABLELOADEDACTION',
+    }
+};
+
+export const TimeTableUpdateAction = (formData) => {
+    return {
+        type: 'TIMETABLEUPDATEACTION',
+        formData: formData
+    }
+};
+
+export const TimeTableChangeAction = (arr) => {
+    return {
+        type: 'TIMETABLECHANGEACTION',
+        new_arr: arr
+    }
+};
+
+export const PaperoSendAction = (formData) => {
+    return {
+        type: 'PAPEROSENDACTION',
+    }
+};
+
+
+
+export const PaperoAction = (formData) => {
+    return {
+        type: 'PAPEROACTION',
+        formData: formData
+    }
+};
+
+export const PaperoActioned = (res) => {
+    return {
+        type: 'PAPEROACTIONED',
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

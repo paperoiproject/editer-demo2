@@ -9,7 +9,7 @@ function TabBar(props){
   return (
     <AppBar position="fixed" color='primary'>
         <Tabs variant="fullWidth" value={props.history.location.pathname}>
-          <Tab value="/scenarioList" component={Link} to="/scenarioList" label="シナリオ一覧"/>
+          <Tab value="/" component={Link} to="/" label="シナリオ一覧"/>
           <Tab value="/timeTable" component={Link} to="/timeTable" label="タイムテーブル"/>
         </Tabs>
     </AppBar>

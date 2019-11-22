@@ -93,15 +93,19 @@ export default function ShowDialog(props) {
       state.scenes[state.addSceneEditIndex].action = v.action
       state.scenes[state.addSceneEditIndex].text = v.text
       state.scenes[state.addSceneEditIndex].image_src = v.image_src
+      state.scenes[state.addSceneEditIndex].image_file = v.image_file
       setState({...state, addFlag:false})
       return
     }
-    console.log(v)
     var new_scenes = (state.scenes.length) ? state.scenes.slice() : []
     new_scenes.push(v)
-    console.log(new_scenes)
-    console.log(state.mode)
     setState({...state, scenes: new_scenes, addFlag: false})
+  }
+
+  const deleteScene = (index) => {
+    let new_scenes = state.scenes.slice();
+    new_scenes.splice(index, 1)
+    setState({...state, scenes:new_scenes})
   }
 
   const drop = (e) => {
@@ -121,10 +125,6 @@ export default function ShowDialog(props) {
       formData.append(`imageURL${i + 1}`, state.scenes[i].image)
     }
     return formData
-  }
-
-  function drop(e){
-    setState({...state, tasks: applyDrag(state.tasks, e)})
   }
 
   function handleAddSceneClick(i){
@@ -181,7 +181,7 @@ export default function ShowDialog(props) {
                 }}/>
               </IconButton>
               <IconButton>
-                <DeleteIcon />
+                <DeleteIcon onClick = {()=>{deleteScene(i)}}/>
               </IconButton>
             </ListItemIcon>
             <ListItemText id={labelId} primary={`${actions[value.action]}: ${value.text}`} />

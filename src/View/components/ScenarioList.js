@@ -23,15 +23,11 @@ const useStyles = makeStyles({
 });
   
 
-function ScenarioList() {
+function ScenarioList(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const inputRef = useRef();
     const {test, scenes} = useSelector(state => state.GoReducer);
-    const update = () => {
-      dispatch(ScenarioLoadAction())
-      dispatch(ScenesLoadAction())
-    }
     useEffect(
       () => {
         dispatch(ScenarioLoadAction())
@@ -54,12 +50,17 @@ function ScenarioList() {
           customSort: (a, b) =>{return a.date.getTime() - b.date.getTime()}
         },
       ],
+      type: props.type,
       showFlag: false,
       addFlag: false,
       showTarget: 0,
       edit_target: -1,
     });
     console.log(scenes)
+
+    const addTimeTable = (name) => {
+      props.addTimeTable(name)
+    }
 
     if (test === undefined){
       console.log("OK")
@@ -101,7 +102,7 @@ function ScenarioList() {
              }
          }
        }}
-        actions={[
+        actions={(props.type !== "add") ? [
           {
             icon: 'add',
             tooltip: 'Add',
@@ -110,20 +111,24 @@ function ScenarioList() {
               setState({ ...state, addFlag: true})
             }
           },
-        ]}
+        ] : []}
         editable={{
-          onRowDelete: oldData =>
+          onRowDelete: (props.type !== "add") ? oldData =>
             new Promise(resolve => {
               let formData = new FormData()
               formData.append("name", oldData.name)
               dispatch(ScenarioDeleteAction(formData))
               resolve()
-            }),
+            }) : ""
         }}
         components={{
           Row: props => (
             <MTableBodyRow {...props} onRowClick={()=>{
-              setState({ ...state, showFlag: true, showTarget: props.data.tableData.id})
+              if(state.type !== "add"){
+                setState({ ...state, showFlag: true, showTarget: props.data.tableData.id})
+              } else {
+                addTimeTable(props.data.name)
+              }
             }}/>
           ),
           Pagination: props => (

@@ -34,6 +34,16 @@ import Paper from '@material-ui/core/Paper';
 
 
 import { Container, Draggable } from 'react-smooth-dnd';
+import { applyDrag, applyDrag2, generateItems } from './utils';
+
+import SceneShowDialog from './SceneShowDialog';
+import SearchDialog from './SearchDialog';
+
+import {TimeTableLoadAction, TimeTableUpdateAction, TimeTableChangeAction, ScenesLoadAction, PaperoSendAction, PaperoAction} from "../../Store/Action/Actions/goAPI";
+
+
+const url = "http://localhost:8080/image/get?"
+let defo_url =  "http://localhost:8080/image/get?name=defo&num=0";
 
 
 const useStyles = makeStyles({
@@ -55,26 +65,97 @@ const useStyles = makeStyles({
 
 function TimeTable() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const inputRef = useRef();
+  const {timeTable, scenes, sending} = useSelector(state => state.GoReducer);
+
+  useEffect(
+    () => {
+      dispatch(ScenesLoadAction())
+      dispatch(TimeTableLoadAction())
+    },
+    [inputRef]
+  );
+
+  const drop = (e) => {
+    let arr = applyDrag(timeTable, e)
+    
+    let formData = new FormData()
+    console.log(arr.length)
+    formData.append("timeTableSize", arr.length)
+    for(let i = 0; i < arr.length; i++){
+      formData.append(`name${i + 1}`, arr[i].name)
+    }
+    dispatch(TimeTableChangeAction(arr))
+    dispatch(TimeTableUpdateAction(formData))
+  }
+
+  const makeFormData = (arr) => {
+    let formData = new FormData()
+    formData.append("timeTableSize", arr.length)
+    for(let i = 0; i < arr.length; i++){
+      formData.append(`name${i + 1}`, arr[i].name)
+    }
+    return formData
+  }
+
+
+  const addTimeTable = (name) => {
+    let new_arr = timeTable.slice()
+    new_arr.push({num: timeTable.length + 1, name: name})
+    dispatch(TimeTableChangeAction(new_arr))
+    let formData = makeFormData(new_arr)
+    dispatch(TimeTableUpdateAction(formData))
+  }
   const [state, setState] = React.useState({
-    columns: [
-      { title: 'シナリオ名', field: 'name' },
-      { title: '作成日', field: 'day', type: 'numeric'},
-      {
-        title: '動作数',
-        field: 'num',
-        type: 'numeric'
-      },
+    timeTable: timeTable,
+    testTimeTable: [
+      {num: 1, name: "a"},
+      {num: 2, name: "b"},
+      {num: 3, name: "c"}
     ],
-    time: ["a", "b", "c"],
+    testScenes: [
+      {name: "a", num: 1, action: "A", text: "あ", image: "a_1"},
+      {name: "a", num: 2, action: "B", text: "い", image: ""},
+      {name: "b", num: 1, action: "A", text: "あ", image: "b_1"},
+      {name: "b", num: 2, action: "B", text: "い", image: "b_2"},
+      {name: "b", num: 3, action: "C", text: "う", image: "b_3"},
+      {name: "c", num: 1, action: "A", text: "あ", image: ""},
+      {name: "c", num: 2, action: "B", text: "い", image: ""},
+    ],
     power: false,
     point: 0,
     next_point: 1,
+    act_num: 0,
     chmove: false,
     searchFlag: false,
     showFlag: false,
-    showTarget: {name: "load", num: 0}
+    showTarget: 0
   });
-  console.log(state.time)
+  if(state.power){
+    console.log(state.act_num)
+    if(!sending){
+      let sendPoint = state.next_point;
+      if(state.act_num === 0){
+        sendPoint = state.point;
+      } 
+      let tasks = scenes.filter((v)=>{return v.name === timeTable[sendPoint].name})
+      let formData = new FormData()
+      formData.append("name", timeTable[sendPoint].name)
+      formData.append("size", tasks.length);
+      for(let i = 0; i < tasks.length; i++){
+         formData.append(`act${i + 1}`, tasks[i].action)
+         formData.append(`text${i + 1}`, tasks[i].text)
+      }
+      dispatch(PaperoSendAction())
+      dispatch(PaperoAction(formData))
+      if(state.act_num !== 0){
+        setState({...state, point: state.next_point, next_point: (state.next_point + 1 < timeTable.length) ? state.next_point + 1 : 0, act_num: state.act_num + 1})
+      } else {
+        setState({...state, act_num: state.act_num + 1})
+      }
+    }
+  }
 
   function iconMove(i){
       if(state.point === i){
@@ -87,7 +168,7 @@ function TimeTable() {
         return ""
       }
   }
-  
+
   return (
     <div className={classes.root}>
     <Paper className={classes.root}>
@@ -101,7 +182,7 @@ function TimeTable() {
     <IconButton edge="end" aria-label="Comments"
       onClick={()=>{
         if(state.power){
-          setState({ ...state, power: false})
+          setState({ ...state, power: false, act_num: 0})
         } else {
           setState({ ...state, power: true})
         }
@@ -110,23 +191,25 @@ function TimeTable() {
     </IconButton>
     </div>
     <List>
-    <Container>
-      {state.time.map((value, i) => {
-        const labelId = `checkbox-list-label-${value}`;
+    <Container onDrop={e => drop(e)}>
+      {timeTable.map((value, i) => {
+        const labelId = `checkbox-list-label-${value.name}`;
         return (
           <Draggable >
-          <ListItem key={value} dense button divider
-            onClick={()=>{setState({ ...state, showTarget: {name: value, num: i}, showFlag: true})}}>
+          <ListItem key={value.num} dense button divider
+            onClick={()=>{setState({ ...state, showFlag: true, showTarget: i})}}>
             <ListItemIcon>
             <IconButton edge="end" aria-label="Comments" onClick={(e)=>{
               e.stopPropagation()
-              let ctime = state.time.slice()
-              ctime.splice(i, 1);
-              setState({...state, time: ctime});}}>
-              <DeleteIcon/>
+              let new_arr = timeTable.slice()
+              new_arr.splice(i, 1)
+              dispatch(TimeTableChangeAction(new_arr))
+              dispatch(TimeTableUpdateAction(makeFormData(new_arr)))
+              }}>
+              <DeleteIcon />
             </IconButton>
             </ListItemIcon>
-            <ListItemText id={labelId} primary={`${value}`} />
+            <ListItemText id={labelId} primary={`${value.name}`} />
             <ListItemSecondaryAction>
               {iconMove(i)}
             </ListItemSecondaryAction>
@@ -137,6 +220,22 @@ function TimeTable() {
     </Container>
     </List>
     </Paper>
+    <SceneShowDialog
+      flag={state.showFlag}
+      tasks={(timeTable.length !== 0) ? scenes.filter((v)=>{return v.name === timeTable[state.showTarget].name}) : ""}
+      handleClose={()=>{setState({ ...state, showFlag: false})}}
+      move={() =>{
+        if(state.power){
+          setState({ ...state, showFlag: false, next_point: state.showTarget});
+        } else {
+          setState({ ...state, showFlag: false, point: state.showTarget, next_point: (state.showTarget + 1 < state.testTimeTable.length)? state.showTarget + 1 : 0});
+        }
+      }}
+    />
+    <SearchDialog 
+      flag={state.searchFlag}
+      handleClose={()=>{setState({ ...state, searchFlag: false})}}
+      addTimeTable={(name)=>{addTimeTable(name)}}/>
     </div>
   );
 }

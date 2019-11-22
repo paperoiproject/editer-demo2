@@ -1,9 +1,11 @@
 import * as request from 'superagent';
 import axios from 'axios';
 
+const url = "http://localhost:8080"
+
 export async function ScenarioListAPI(){
     return request
-    .get(`http://localhost:8080/scenario/list`)
+    .get(`${url}/scenario/list`)
     .send()
     .then(response => {
       const body = response.body;
@@ -17,7 +19,7 @@ export async function ScenarioListAPI(){
 
 export async function ScenesListAPI(){
     return request
-    .get(`http://localhost:8080/scenes/list`)
+    .get(`${url}/scenes/list`)
     .send()
     .then(response => {
       const body = response.body;
@@ -31,7 +33,7 @@ export async function ScenesListAPI(){
 
 export function ScenarioMakeAPI(formData){
   return axios
-  .post(`http://localhost:8080/scenario/make`, formData, {
+  .post(`${url}/scenario/make`, formData, {
       headers: {
          'content-type': 'multipart/form-data',
       },
@@ -47,7 +49,7 @@ export function ScenarioMakeAPI(formData){
 
 export function ScenarioUpdateAPI(formData){
   return axios
-  .post(`http://localhost:8080/scenario/update`, formData, {
+  .post(`${url}/scenario/update`, formData, {
       headers: {
          'content-type': 'multipart/form-data',
       },
@@ -62,7 +64,7 @@ export function ScenarioUpdateAPI(formData){
 
 export function ScenarioDeleteAPI(formData){
   return axios
-  .post(`http://localhost:8080/scenario/delete`, formData, {
+  .post(`${url}/scenario/delete`, formData, {
       headers: {
          'content-type': 'multipart/form-data',
       },
@@ -75,7 +77,64 @@ export function ScenarioDeleteAPI(formData){
   });
 }
 
+export async function TimeTableListAPI(){
+  return request
+  .get(`${url}/timeTable/list`)
+  .send()
+  .then(response => {
+    const body = response.body;
+    console.log(body)
+    return body.result;
+  })
+  .catch(error => {
+    return { error };
+  });
+}
 
+export function TimeTableUpdateAPI(formData){
+  return axios
+  .post(`${url}/timeTable/update`, formData, {
+      headers: {
+         'content-type': 'multipart/form-data',
+      },
+  })
+  .then(response => {
+    return response
+  })
+  .catch(error => {
+      return { error };
+  });
+}
+
+export function PaperoActionAPI(formData){
+  return axios
+  .post(`${url}/papero/action`, formData, {
+      headers: {
+         'content-type': 'multipart/form-data',
+      },
+  })
+  .then(response => {
+    return response
+  })
+  .catch(error => {
+      return { error };
+  });
+}
+
+export function ImageChangeAPI(formData){
+  return axios
+  .post(`${url}/image/change`, formData, {
+      headers: {
+         'content-type': 'multipart/form-data',
+      },
+  })
+  .then(response => {
+    return response
+  })
+  .catch(error => {
+      return { error };
+  });
+}
 
 
 

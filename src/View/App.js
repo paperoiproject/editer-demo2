@@ -21,7 +21,7 @@ function App() {
       <BrowserRouter>
         <TabBar />
         <Switch>
-          <Route exact path='/scenarioList' component={ScenarioList} />
+          <Route exact path='/' component={ScenarioList} />
           <Route exact path='/timetable' component={TimeTable} />
         </Switch>
       </BrowserRouter>
