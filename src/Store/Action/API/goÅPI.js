@@ -1,7 +1,7 @@
 import * as request from 'superagent';
 import axios from 'axios';
 
-const url = "http://localhost:8080"
+const url = "http://10.70.85.150:8080"
 
 export async function ScenarioListAPI(){
     return request
