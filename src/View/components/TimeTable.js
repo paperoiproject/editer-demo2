@@ -133,26 +133,27 @@ function TimeTable() {
     showTarget: 0
   });
   if(state.power){
-    console.log(state.act_num)
-    if(!sending){
-      let sendPoint = state.next_point;
-      if(state.act_num === 0){
-        sendPoint = state.point;
-      } 
-      let tasks = scenes.filter((v)=>{return v.name === timeTable[sendPoint].name})
-      let formData = new FormData()
-      formData.append("name", timeTable[sendPoint].name)
-      formData.append("size", tasks.length);
-      for(let i = 0; i < tasks.length; i++){
-         formData.append(`act${i + 1}`, tasks[i].action)
-         formData.append(`text${i + 1}`, tasks[i].text)
-      }
-      dispatch(PaperoSendAction())
-      dispatch(PaperoAction(formData))
-      if(state.act_num !== 0){
-        setState({...state, point: state.next_point, next_point: (state.next_point + 1 < timeTable.length) ? state.next_point + 1 : 0, act_num: state.act_num + 1})
-      } else {
-        setState({...state, act_num: state.act_num + 1})
+   if(timeTable.length >= 0){
+      if(!sending){
+        let sendPoint = state.next_point;
+        if(state.act_num === 0){
+          sendPoint = state.point;
+        } 
+        let tasks = scenes.filter((v)=>{return v.name === timeTable[sendPoint].name})
+        let formData = new FormData()
+        formData.append("name", timeTable[sendPoint].name)
+        formData.append("size", tasks.length);
+        for(let i = 0; i < tasks.length; i++){
+           formData.append(`act${i + 1}`, tasks[i].action)
+           formData.append(`text${i + 1}`, tasks[i].text)
+        }
+        dispatch(PaperoSendAction())
+        dispatch(PaperoAction(formData))
+        if(state.act_num !== 0){
+          setState({...state, point: state.next_point, next_point: (state.next_point + 1 < timeTable.length) ? state.next_point + 1 : 0, act_num: state.act_num + 1})
+        } else {
+          setState({...state, act_num: state.act_num + 1})
+        }
       }
     }
   }
@@ -202,6 +203,9 @@ function TimeTable() {
             <IconButton edge="end" aria-label="Comments" onClick={(e)=>{
               e.stopPropagation()
               let new_arr = timeTable.slice()
+              if(i == new_arr.length - 1){
+                setState({...state, next_point: 0})
+              }
               new_arr.splice(i, 1)
               dispatch(TimeTableChangeAction(new_arr))
               dispatch(TimeTableUpdateAction(makeFormData(new_arr)))
@@ -222,7 +226,7 @@ function TimeTable() {
     </Paper>
     <SceneShowDialog
       flag={state.showFlag}
-      tasks={(timeTable.length !== 0) ? scenes.filter((v)=>{return v.name === timeTable[state.showTarget].name}) : ""}
+      tasks={(timeTable.length !== 0 && state.showFlag === true) ? scenes.filter((v)=>{return v.name === timeTable[state.showTarget].name}) : ""}
       handleClose={()=>{setState({ ...state, showFlag: false})}}
       move={() =>{
         if(state.power){
