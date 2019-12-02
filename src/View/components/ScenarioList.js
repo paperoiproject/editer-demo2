@@ -47,7 +47,7 @@ function ScenarioList(props) {
           title: '作成日/編集日',
           field: 'day',
           type: 'numeric',
-          customSort: (a, b) =>{return a.date.getTime() - b.date.getTime()}
+          customSort: (a, b) =>{return new Date(Date.parse(a.date)).getTime() -  new Date(Date.parse(b.date)).getTime()}
         },
       ],
       type: props.type,
