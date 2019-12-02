@@ -41,15 +41,9 @@ import SearchDialog from './SearchDialog';
 
 import {TimeTableLoadAction, TimeTableUpdateAction, TimeTableChangeAction, ScenesLoadAction, PaperoSendAction, PaperoAction} from "../../Store/Action/Actions/goAPI";
 
-
-const url = "http://localhost:8080/image/get?"
-let defo_url =  "http://localhost:8080/image/get?name=defo&num=0";
-
-
 const useStyles = makeStyles({
   root: {
     width: "60vw",
-    hight: "70vh"
   },
   header: {
     display: "flex",
@@ -61,6 +55,9 @@ const useStyles = makeStyles({
     alignItems: "center",
     padding: 10
   },
+  row: {
+    height: "7vh"
+  }
 });
 
 function TimeTable() {
@@ -107,6 +104,7 @@ function TimeTable() {
     let formData = makeFormData(new_arr)
     dispatch(TimeTableUpdateAction(formData))
   }
+
   const [state, setState] = React.useState({
     timeTable: timeTable,
     testTimeTable: [
@@ -132,8 +130,12 @@ function TimeTable() {
     showFlag: false,
     showTarget: 0
   });
+
+  console.log(state.timeTable)
+
+
   if(state.power){
-   if(timeTable.length >= 0){
+   if(timeTable.length > 0){
       if(!sending){
         let sendPoint = state.next_point;
         if(state.act_num === 0){
@@ -177,9 +179,11 @@ function TimeTable() {
     <Typography variant="h6" style={{width: "15vw"}}>
       タイムテーブル
     </Typography>
-    <IconButton edge="end" aria-label="Comments" style={{marginLeft: "36vw", marginRight: "1vw"}} onClick={()=>{setState({ ...state, searchFlag: true})}}>
-      <AddIcon />
-    </IconButton>
+    {(!state.power) ?
+     <IconButton edge="end" aria-label="Comments" style={{marginLeft: "36vw", marginRight: "1vw"}} onClick={()=>{setState({ ...state, searchFlag: true})}}>
+       <AddIcon />
+     </IconButton> : <IconButton edge="end" aria-label="Comments" style={{marginLeft: "38vw", marginRight: "1vw"}}/>
+    }
     <IconButton edge="end" aria-label="Comments"
       onClick={()=>{
         if(state.power){
@@ -196,6 +200,7 @@ function TimeTable() {
       {timeTable.map((value, i) => {
         const labelId = `checkbox-list-label-${value.name}`;
         return (
+          (!state.power) ?
           <Draggable >
           <ListItem key={value.num} dense button divider
             onClick={()=>{setState({ ...state, showFlag: true, showTarget: i})}}>
@@ -203,10 +208,13 @@ function TimeTable() {
             <IconButton edge="end" aria-label="Comments" onClick={(e)=>{
               e.stopPropagation()
               let new_arr = timeTable.slice()
-              if(i == new_arr.length - 1){
-                setState({...state, next_point: 0})
-              }
               new_arr.splice(i, 1)
+              if(state.point === new_arr.length){
+                let new_point = state.point - 1
+                if(new_point >= 0){
+                  setState({ ...state, point: new_point})
+                }
+              }
               dispatch(TimeTableChangeAction(new_arr))
               dispatch(TimeTableUpdateAction(makeFormData(new_arr)))
               }}>
@@ -218,7 +226,13 @@ function TimeTable() {
               {iconMove(i)}
             </ListItemSecondaryAction>
           </ListItem>
-          </Draggable >
+          </Draggable > :
+          <ListItem key={value.num} dense button divider onClick={()=>{setState({ ...state, showFlag: true, showTarget: i})}} classes={{root: classes.row}}>
+          <ListItemText id={labelId} primary={`${value.name}`} />
+          <ListItemSecondaryAction>
+            {iconMove(i)}
+          </ListItemSecondaryAction>
+          </ListItem>
         );
       })}
     </Container>
@@ -232,7 +246,7 @@ function TimeTable() {
         if(state.power){
           setState({ ...state, showFlag: false, next_point: state.showTarget});
         } else {
-          setState({ ...state, showFlag: false, point: state.showTarget, next_point: (state.showTarget + 1 < state.testTimeTable.length)? state.showTarget + 1 : 0});
+          setState({ ...state, showFlag: false, point: state.showTarget, next_point: (state.showTarget + 1 < timeTable.length)? state.showTarget + 1 : 0});
         }
       }}
     />

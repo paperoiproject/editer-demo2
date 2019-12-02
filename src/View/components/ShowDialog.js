@@ -31,8 +31,8 @@ import SendDialog from './SendDialog';
 import {ScenarioMakeAction, ScenarioUpdateAction} from "../../Store/Action/Actions/goAPI";
 import { useSelector, useDispatch } from "react-redux";
 
-const url = "http://localhost:8080/image/get?"
-let defo_url =  "http://localhost:8080/image/get?name=defo&num=0";
+const url = "https://10.70.85.150:443/image/get?"
+let defo_url =  "https://10.70.85.150:443/image/get?name=defo&num=0";
 
 const useStyles = makeStyles(theme => ({
   root: {
