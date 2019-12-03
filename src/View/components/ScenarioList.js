@@ -6,10 +6,11 @@ import MaterialTable, { MTableBodyRow, MTableHeader}  from 'material-table';
 import moment from 'moment'
 
 import ShowDialog from './ShowDialog';
+import CautionDialog from './CautionDialog';
 
 import { useSelector, useDispatch } from "react-redux";
 
-import {ScenarioLoadAction, ScenesLoadAction,ScenarioDeleteAction } from "../../Store/Action/Actions/goAPI";
+import {ScenarioLoadAction, ScenesLoadAction, ScenarioDeleteAction, TimeTableLoadAction} from "../../Store/Action/Actions/goAPI";
 import ServerErrorDis from "./ServerErrorDis"
 const useStyles = makeStyles({
   root: {
@@ -27,11 +28,12 @@ function ScenarioList(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const inputRef = useRef();
-    const {test, scenes} = useSelector(state => state.GoReducer);
+    const {test, scenes, timeTable} = useSelector(state => state.GoReducer);
     useEffect(
       () => {
         dispatch(ScenarioLoadAction())
         dispatch(ScenesLoadAction())
+        dispatch(TimeTableLoadAction())
       },
       [inputRef]
     );
@@ -52,6 +54,7 @@ function ScenarioList(props) {
       ],
       type: props.type,
       showFlag: false,
+      cautionFlag: false,
       addFlag: false,
       showTarget: 0,
       edit_target: -1,
@@ -65,7 +68,6 @@ function ScenarioList(props) {
     if (test === undefined){
       console.log("OK")
       return (<ServerErrorDis/>)
-      
     }
     return (
       <div className={classes.root}>
@@ -116,9 +118,15 @@ function ScenarioList(props) {
           onRowDelete: (props.type !== "add") ? oldData =>
             new Promise(resolve => {
               let formData = new FormData()
-              formData.append("name", oldData.name)
-              dispatch(ScenarioDeleteAction(formData))
-              resolve()
+              let timeTableFlag = timeTable.some((v) => v.name === oldData.name)
+              if(timeTableFlag){
+                setState({ ...state, cautionFlag: true})
+                resolve()
+              } else {
+                formData.append("name", oldData.name)
+                dispatch(ScenarioDeleteAction(formData))
+                resolve()
+              }
             }) : ""
         }}
         components={{
@@ -162,6 +170,7 @@ function ScenarioList(props) {
           close={()=>{setState({ ...state, showFlag: false, showTarget: 0})}}/>
         ) : ""
       }
+      <CautionDialog open={state.cautionFlag} close={()=>{setState({ ...state, cautionFlag: false})}}/>
       </div>
     );
   }
