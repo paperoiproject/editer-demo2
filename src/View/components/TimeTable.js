@@ -151,7 +151,11 @@ function TimeTable() {
         }
         dispatch(PaperoSendAction())
         dispatch(PaperoAction(formData))
-        setState({...state, point: state.next_point, next_point: (state.next_point + 1 < timeTable.length) ? state.next_point + 1 : 0, act_num: state.act_num + 1})
+        if(state.act_num !== 0){
+          setState({...state, point: state.next_point, next_point: (state.next_point + 1 < timeTable.length) ? state.next_point + 1 : 0, act_num: state.act_num + 1})
+        } else {
+          setState({...state, act_num: state.act_num + 1})
+        }
       }
     }
   }

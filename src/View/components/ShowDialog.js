@@ -135,7 +135,7 @@ export default function ShowDialog(props) {
   console.log(state.chFlag)
   
   return (
-    <Dialog fullScreen open={props.open} onClose={() => {props.handleClose()}}>
+    <Dialog fullScreen open={props.open} onClose={() => {props.close()}}>
 
     <AppBar className={classes.appBar}>
       <Toolbar>
