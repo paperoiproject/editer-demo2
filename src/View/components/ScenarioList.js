@@ -7,10 +7,11 @@ import moment from 'moment'
 
 import ShowDialog from './ShowDialog';
 import CautionDialog from './CautionDialog';
+import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 
 import { useSelector, useDispatch } from "react-redux";
 
-import {ScenarioLoadAction, ScenesLoadAction, ScenarioDeleteAction, TimeTableLoadAction} from "../../Store/Action/Actions/goAPI";
+import {ScenarioLoadAction, ScenesLoadAction, ScenarioDeleteAction, TimeTableLoadAction, PaperoAction} from "../../Store/Action/Actions/goAPI";
 import ServerErrorDis from "./ServerErrorDis"
 const useStyles = makeStyles({
   root: {
@@ -37,6 +38,18 @@ function ScenarioList(props) {
       },
       [inputRef]
     );
+
+    const postWork = (name) =>{
+      let tasks = scenes.filter((v)=>{return v.name === name})
+      let formData = new FormData()
+      formData.append("name", name)
+      formData.append("size", tasks.length);
+      for(let i = 0; i < tasks.length; i++){
+        formData.append(`act${i + 1}`, tasks[i].action)
+        formData.append(`text${i + 1}`, tasks[i].text)
+      }
+      dispatch(PaperoAction(formData))
+    }
 
     const [state, setState] = React.useState({
       columns: [
@@ -106,6 +119,13 @@ function ScenarioList(props) {
        }}
         actions={(props.type !== "add") ? [
           {
+            icon: PlayIcon,
+            tooltip: '再生',
+            onClick: (event, rowData) => {
+             postWork(rowData.name)
+            }
+          },
+          {
             icon: 'add',
             tooltip: 'Add',
             isFreeAction: true,
@@ -113,7 +133,16 @@ function ScenarioList(props) {
               setState({ ...state, addFlag: true})
             }
           },
-        ] : []}
+
+        ] : [
+          {
+            icon: PlayIcon,
+            tooltip: '再生',
+            onClick: (event, rowData) => {
+              postWork(rowData.name)
+             }
+          },
+        ]}
         editable={{
           onRowDelete: (props.type !== "add") ? oldData =>
             new Promise(resolve => {
